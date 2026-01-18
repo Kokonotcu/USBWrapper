@@ -20,6 +20,13 @@ public:
 	{
 		device = dev;
 	}
+	~MidiDevice() 
+	{
+		if (device) 
+		{
+			libusb_unref_device(device); // Clean up the reference we added
+		}
+	}
 private:
 };
 

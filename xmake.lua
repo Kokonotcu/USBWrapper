@@ -23,20 +23,13 @@ end
 set_targetdir("bin/$(plat)/$(mode)")
 --
 ---- ---- Root-scope requirements (OK here; NOT inside target) ----
----- Linux uses system packages via pkg-config; shaderc optional.
---add_requires("pkgconfig::vulkan",  {system = true, optional = true})
---add_requires("pkgconfig::sdl3",    {system = true, optional = true})
---add_requires("pkgconfig::shaderc", {system = true, optional = true})
---
---option("use_xrepo_sdl3")
---    set_default(true)
---    set_showmenu(true)
---option_end()
---
---if is_plat("android") then
---    add_requires("libsdl3", {configs = {shared = false}})
---	add_requires("shaderc", {configs = {shared = false}})
---end
+---- Linux uses system packages via pkg-config;
+add_requires("libsdl3")
+add_requires("rtmidi")
+
+if is_plat("android") then
+    add_requires("libsdl3", {configs = {shared = false}})
+end
 --
 target("USB_Base")
     if is_plat("android") then
@@ -45,6 +38,9 @@ target("USB_Base")
         set_kind("binary")
     end
 --
+	add_packages("libsdl3")
+    add_packages("rtmidi")
+
     -- Your sources
     add_includedirs("source", {public = true})
 	add_includedirs("external/libusb/include",{public = true})
@@ -60,19 +56,7 @@ target("USB_Base")
 --    
 	add_linkdirs("external/libusb/lib")   
     add_links("libusb") 
---
---    add_files(
---        "external/imgui/imgui.cpp",
---        "external/imgui/imgui_demo.cpp",
---        "external/imgui/imgui_draw.cpp",
---        "external/imgui/imgui_tables.cpp",
---        "external/imgui/imgui_widgets.cpp",
---        "external/imgui/imgui_impl_sdl3.cpp",
---        "external/imgui/imgui_impl_vulkan.cpp",
---		"external/vkbootstrap/**.cpp",
---		"external/fastgltf/src/**.cpp"
---    )
---
+	
 --    -- -------------------- Linux --------------------
 --    if is_plat("linux") then
 --		
@@ -144,9 +128,7 @@ target("USB_Base")
 --
 --    -- -------------------- Windows (MSVC, vendored SDL) --------------------
     if is_plat("windows") then
---		
---		add_defines("FMT_HEADER_ONLY")
---		
+	
         set_toolchains("msvc")
         add_cxflags("/MP")
         add_ldflags("/DEBUG")
@@ -163,27 +145,27 @@ target("USB_Base")
 --        end
 --
 --        -- SDL3 from your repo: external/SDL
---        local sdl = path.join(os.projectdir(), "external", "SDL")
---		add_includedirs(path.join(sdl, "include"), {public = true})
+        local sdl = path.join(os.projectdir(), "external", "SDL")
+		add_includedirs(path.join(sdl, "include"), {public = true})
 --		
---		sub = ""
---        do
---            arch = (get_config("arch") or ""):lower()
---            if arch == "x64" or arch == "x86_64" then
---                sub = "x64"		
---				print("platform : x64")
---            elseif arch == "arm64" then
---                sub = "arm64"
---				print("platform : arm64")
---			else
---                sub = "x86"
---				print("platform : x86")
---            end
---			
---			add_linkdirs(path.join(sdl, "lib", sub))
---            add_links("SDL3") -- dynamic; ship SDL3.dll
---            
---        end
+		sub = ""
+        do
+            arch = (get_config("arch") or ""):lower()
+            if arch == "x64" or arch == "x86_64" then
+                sub = "x64"		
+				print("platform : x64")
+            elseif arch == "arm64" then
+                sub = "arm64"
+				print("platform : arm64")
+			else
+                sub = "x86"
+				print("platform : x86")
+            end
+			
+			add_linkdirs(path.join(sdl, "lib", sub))
+            add_links("SDL3") -- dynamic; ship SDL3.dll
+            
+        end
 --
 --        -- Optional: shaderc from Vulkan SDK if present
 --        if vksdk and os.isfile(path.join(vksdk, "Lib", "shaderc_shared.lib")) then
@@ -191,38 +173,31 @@ target("USB_Base")
 --            add_links("shaderc_shared")
 --        end
 --
---        -- After build, drop DLLs beside the .exe
---        after_build(function (t)
---			local out = t:targetdir()
---			arch = (get_config("arch") or ""):lower()
---            if arch == "x64" or arch == "x86_64" then
---                sub = "x64"		
---				print("platform : x64")
---            elseif arch == "arm64" then
---                sub = "arm64"
---				print("platform : arm64")
---			else
---                sub = "x86"
---				print("platform : x86")
---            end
---			os.cp(path.join(sdl, "lib", sub, "SDL3.dll"), path.join(os.projectdir(),out))
+        -- After build, drop DLLs beside the .exe
+        after_build(function (t)
+			local out = t:targetdir()
+			arch = (get_config("arch") or ""):lower()
+            if arch == "x64" or arch == "x86_64" then
+                sub = "x64"		
+				print("platform : x64")
+            elseif arch == "arm64" then
+                sub = "arm64"
+				print("platform : arm64")
+			else
+                sub = "x86"
+				print("platform : x86")
+            end
+			os.cp(path.join(sdl, "lib", sub, "SDL3.dll"), path.join(os.projectdir(),out))
 --			os.cp(path.join(os.projectdir(),"assets"), path.join(os.projectdir(),out))
 --			os.cp(path.join(os.projectdir(),"shaders"), path.join(os.projectdir(),out))
---		
---			-- optional shaderc from Vulkan SDK
---			local vksdk = os.getenv("VULKAN_SDK")
---			if vksdk then
---				os.trycp(path.join(vksdk, "Bin", "shaderc_shared.dll"), out)
---				os.trycp(path.join(vksdk, "Bin", "shaderc.dll"), out)
---			end
---		end)
+		end)
     end
 --
 --		-- Output name
 if is_plat("windows") then
 		set_filename("usb_base.exe")
 --	elseif is_plat("linux") then
---		set_filename("retr0_engine") -- ELF on Linux, no extension
+--		set_filename("usb_base.exe") -- ELF on Linux, no extension
 --	elseif is_plat("android") then
 --		set_filename("libmain.so")
 end
