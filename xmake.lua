@@ -145,52 +145,52 @@ target("USB_Base")
 --        end
 --
 --        -- SDL3 from your repo: external/SDL
-        local sdl = path.join(os.projectdir(), "external", "SDL")
-		add_includedirs(path.join(sdl, "include"), {public = true})
---		
-		sub = ""
-        do
-            arch = (get_config("arch") or ""):lower()
-            if arch == "x64" or arch == "x86_64" then
-                sub = "x64"		
-				print("platform : x64")
-            elseif arch == "arm64" then
-                sub = "arm64"
-				print("platform : arm64")
-			else
-                sub = "x86"
-				print("platform : x86")
-            end
-			
-			add_linkdirs(path.join(sdl, "lib", sub))
-            add_links("SDL3") -- dynamic; ship SDL3.dll
-            
-        end
---
---        -- Optional: shaderc from Vulkan SDK if present
---        if vksdk and os.isfile(path.join(vksdk, "Lib", "shaderc_shared.lib")) then
---            add_linkdirs(path.join(vksdk, "Lib"))
---            add_links("shaderc_shared")
---        end
---
-        -- After build, drop DLLs beside the .exe
-        after_build(function (t)
-			local out = t:targetdir()
-			arch = (get_config("arch") or ""):lower()
-            if arch == "x64" or arch == "x86_64" then
-                sub = "x64"		
-				print("platform : x64")
-            elseif arch == "arm64" then
-                sub = "arm64"
-				print("platform : arm64")
-			else
-                sub = "x86"
-				print("platform : x86")
-            end
-			os.cp(path.join(sdl, "lib", sub, "SDL3.dll"), path.join(os.projectdir(),out))
---			os.cp(path.join(os.projectdir(),"assets"), path.join(os.projectdir(),out))
---			os.cp(path.join(os.projectdir(),"shaders"), path.join(os.projectdir(),out))
-		end)
+        --local sdl = path.join(os.projectdir(), "external", "SDL")
+		--add_includedirs(path.join(sdl, "include"), {public = true})
+--		--
+		--sub = ""
+        --do
+        --    arch = (get_config("arch") or ""):lower()
+        --    if arch == "x64" or arch == "x86_64" then
+        --        sub = "x64"		
+		--		print("platform : x64")
+        --    elseif arch == "arm64" then
+        --        sub = "arm64"
+		--		print("platform : arm64")
+		--	else
+        --        sub = "x86"
+		--		print("platform : x86")
+        --    end
+		--	
+		--	add_linkdirs(path.join(sdl, "lib", sub))
+        --    add_links("SDL3") -- dynamic; ship SDL3.dll
+        --    
+        --end
+--      --
+--      --  -- Optional: shaderc from Vulkan SDK if present
+--      --  if vksdk and os.isfile(path.join(vksdk, "Lib", "shaderc_shared.lib")) then
+--      --      add_linkdirs(path.join(vksdk, "Lib"))
+--      --      add_links("shaderc_shared")
+--      --  end
+--      --
+        ---- After build, drop DLLs beside the .exe
+        --after_build(function (t)
+		--	local out = t:targetdir()
+		--	arch = (get_config("arch") or ""):lower()
+        --    if arch == "x64" or arch == "x86_64" then
+        --        sub = "x64"		
+		--		print("platform : x64")
+        --    elseif arch == "arm64" then
+        --        sub = "arm64"
+		--		print("platform : arm64")
+		--	else
+        --        sub = "x86"
+		--		print("platform : x86")
+        --    end
+		--	os.cp(path.join(sdl, "lib", sub, "SDL3.dll"), path.join(os.projectdir(),out))
+--		--	os.cp(path.join(os.projectdir(),"assets"), path.join(os.projectdir(),out))
+--		--	os.cp(path.join(os.projectdir(),"shaders"), path.join(os.projectdir(),out))
+		--end)
     end
 --
 --		-- Output name
