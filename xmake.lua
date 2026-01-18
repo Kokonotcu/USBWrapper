@@ -43,7 +43,6 @@ target("USB_Base")
 
     -- Your sources
     add_includedirs("source", {public = true})
-	add_includedirs("external/libusb/include",{public = true})
 --	
 --	-- Define groups (patterns are relative to rootdir)
 	add_filegroups("Source Files", { rootdir = "source", files = {"**.cpp"},           group = "Source Files" })
@@ -52,10 +51,7 @@ target("USB_Base")
 --	-- Add those groups to the target
 	add_files("source/**.cpp",    { group = "Source Files" })
 	add_headerfiles("source/**.h", "source/**.hpp",    { group = "Header Files" })
-    
---    
-	add_linkdirs("external/libusb/lib")   
-    add_links("libusb") 
+	
 	
 --    -- -------------------- Linux --------------------
 --    if is_plat("linux") then
