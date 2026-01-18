@@ -2,8 +2,6 @@
 
 void MIDI::midiCallback(double deltatime, std::vector<unsigned char>* message, void* userData)
 {
-    Synthesizer* synth = (Synthesizer*)userData;
-
     // MIDI Packet: [Status, Note, Velocity]
     if (message->size() >= 3)
     {
@@ -14,12 +12,12 @@ void MIDI::midiCallback(double deltatime, std::vector<unsigned char>* message, v
         // Note On (0x90)
         if ((status & 0xF0) == 0x90 && velocity > 0)
         {
-            synth->NoteOn(note);
+            Synthesizer::NoteOn(note, velocity);
         }
         // Note Off (0x80)
         else if ((status & 0xF0) == 0x80 || ((status & 0xF0) == 0x90 && velocity == 0))
         {
-            synth->NoteOff(note);
+            Synthesizer::NoteOff(note);
         }
     }
 }

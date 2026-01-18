@@ -3,11 +3,11 @@
 bool Audio::Init()
 {
     spec = { SDL_AUDIO_F32, 2, 48000 };
-    stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, Synthesizer::AudioCallback, &synth);
+    stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, Synthesizer::AudioCallback, nullptr);
     SDL_ResumeAudioDevice(SDL_GetAudioStreamDevice(stream));
 
     midi.Init();
-    synth.Init();
+    Synthesizer::Init();
 
     try
     {
@@ -16,7 +16,7 @@ bool Audio::Init()
         if (portCount > 0)
         {
             midi.GetRtMidi()->openPort(0); // Open first device
-            midi.GetRtMidi()->setCallback(&MIDI::midiCallback, &synth);
+            midi.GetRtMidi()->setCallback(&MIDI::midiCallback, nullptr);
             midi.GetRtMidi()->ignoreTypes(false, false, false); // Don't ignore SysEx/Timing
             std::cout << "Connected to MIDI Device: " << midi.GetRtMidi()->getPortName(0) << "\n";
         }
@@ -36,9 +36,4 @@ bool Audio::Init()
 void Audio::Cleanup()
 {
     midi.Shutdown();
-}
-
-Synthesizer& Audio::GetSynthesizer()
-{
-	return synth;
 }
