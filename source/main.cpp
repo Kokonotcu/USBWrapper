@@ -1,9 +1,15 @@
-#include "DeviceDetector.h"
+#include <SDL3/SDL.h>
+#include <iostream>
+#include <vector>
+#include "Application.h"
 
-int main(void) 
+int main(int argc, char* argv[])
 {
-	DeviceDetector detector;
+    Application app;
 
-	detector.Initialize();
+    app.Run();
+
+    app.Cleanup();
+
     return 0;
 }
