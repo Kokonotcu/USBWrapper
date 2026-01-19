@@ -4,14 +4,14 @@
 #include <SDL3/SDL.h>
 #include "Wave.h"
 
-namespace Synthesizer
+namespace Oscilator
 {
     void Init();
 
     void NoteOn(int note, int velocity);
 
     void NoteOff(int note);
-    
+
 	void SetWaveform(std::unique_ptr<Wave> wave);
 
     // Helper for visualization

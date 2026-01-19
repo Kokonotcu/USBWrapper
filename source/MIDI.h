@@ -1,6 +1,6 @@
 #pragma once
 #include <rtmidi/RtMidi.h> // Cross-platform MIDI lib
-#include "Synthesizer.h"
+#include "Oscilator.h"
 
 class MIDI
 {

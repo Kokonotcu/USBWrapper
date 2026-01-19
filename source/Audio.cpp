@@ -3,11 +3,11 @@
 bool Audio::Init()
 {
     spec = { SDL_AUDIO_F32, 2, 48000 };
-    stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, Synthesizer::AudioCallback, nullptr);
+    stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, Oscilator::AudioCallback, nullptr);
     SDL_ResumeAudioDevice(SDL_GetAudioStreamDevice(stream));
 
     midi.Init();
-    Synthesizer::Init();
+    Oscilator::Init();
 
     try
     {

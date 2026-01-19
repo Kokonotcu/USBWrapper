@@ -28,7 +28,7 @@ void Application::Run()
 		renderer.SetDrawColor(30, 30, 30, 255);
 		renderer.Clear();
 
-        auto voices = Synthesizer::GetActiveVoices();
+        auto voices = Oscilator::GetActiveVoices();
         float keyWidth = (float)SCREEN_WIDTH / 128.0f;
 
         for (int i = 0; i < 128; i++)

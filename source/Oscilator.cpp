@@ -1,8 +1,8 @@
-#include "Synthesizer.h"
+#include "Oscilator.h"
 
 #define MASTER_VOLUME 0.2f
 
-namespace Synthesizer
+namespace Oscilator
 {
     namespace
     {
@@ -15,9 +15,14 @@ namespace Synthesizer
         };
 
 
-		std::unique_ptr<Wave> currentWave; // Current waveform (not used in this simple example)
+		std::unique_ptr<Wave> currentWave; 
         Voice voices[128] = { 0 }; // Polyphony for all 128 MIDI notes
         std::mutex mut;
+
+        float CalculateFrequency(int note)
+        {
+            return 440.0f * std::pow(2.0f, (note - 69) / 12.0f);
+		}
     }
 
     void Init()
@@ -48,7 +53,7 @@ namespace Synthesizer
 		currentWave = std::move(wave);
     }
 
-    std::vector<Synthesizer::VoiceState> GetActiveVoices()
+    std::vector<Oscilator::VoiceState> GetActiveVoices()
     {
         std::lock_guard<std::mutex> lock(mut);
         std::vector<VoiceState> states;
@@ -64,7 +69,6 @@ namespace Synthesizer
 
         std::lock_guard<std::mutex> lock(mut);
 
-		SetWaveform(std::make_unique<NoiseWave>());
         for (int i = 0; i < sampleCount; ++i)
         {
             float sample = 0.0f;
@@ -72,8 +76,7 @@ namespace Synthesizer
             {
                 if (voice.active)
                 {
-                    // Standard Sine Wave Formula
-                    float freq = 440.0f * std::pow(2.0f, (voice.note - 69) / 12.0f);
+                    float freq = CalculateFrequency(voice.note);
                     sample += voice.amplitude * currentWave->Calculate(voice.phase) * MASTER_VOLUME;
                     voice.phase += 2.0f * 3.14159f * freq / 48000.0f;
                     if (voice.phase > 2.0f * 3.14159f)
