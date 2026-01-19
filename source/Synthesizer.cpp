@@ -22,7 +22,7 @@ namespace Synthesizer
 
     void Init()
     {
-		currentWave = std::make_unique<SineWave>(); // Default to Sine Wave
+		currentWave = std::make_unique<SineWave>(); 
         for (auto& v : voices)
             v.active = false;
     }
@@ -41,6 +41,13 @@ namespace Synthesizer
         std::lock_guard<std::mutex> lock(mut);
         voices[note].active = false;
     }
+
+    void SetWaveform(std::unique_ptr<Wave> wave)
+    {
+		currentWave.reset();
+		currentWave = std::move(wave);
+    }
+
     std::vector<Synthesizer::VoiceState> GetActiveVoices()
     {
         std::lock_guard<std::mutex> lock(mut);
@@ -49,12 +56,15 @@ namespace Synthesizer
             states.push_back({ v.active, v.note });
         return states;
     }
+
     void AudioCallback(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount)
     {
         int sampleCount = additional_amount / sizeof(float);
         std::vector<float> buffer(sampleCount);
 
         std::lock_guard<std::mutex> lock(mut);
+
+		SetWaveform(std::make_unique<NoiseWave>());
         for (int i = 0; i < sampleCount; ++i)
         {
             float sample = 0.0f;

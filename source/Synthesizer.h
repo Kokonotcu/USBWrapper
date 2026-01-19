@@ -12,7 +12,7 @@ namespace Synthesizer
 
     void NoteOff(int note);
     
-
+	void SetWaveform(std::unique_ptr<Wave> wave);
 
     // Helper for visualization
     struct VoiceState
