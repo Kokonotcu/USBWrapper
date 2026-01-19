@@ -14,12 +14,15 @@ namespace Synthesizer
             float amplitude;
         };
 
+
+		std::unique_ptr<Wave> currentWave; // Current waveform (not used in this simple example)
         Voice voices[128] = { 0 }; // Polyphony for all 128 MIDI notes
         std::mutex mut;
     }
 
     void Init()
     {
+		currentWave = std::make_unique<SineWave>(); // Default to Sine Wave
         for (auto& v : voices)
             v.active = false;
     }
@@ -61,7 +64,7 @@ namespace Synthesizer
                 {
                     // Standard Sine Wave Formula
                     float freq = 440.0f * std::pow(2.0f, (voice.note - 69) / 12.0f);
-                    sample += voice.amplitude * std::sin(voice.phase) * MASTER_VOLUME;
+                    sample += voice.amplitude * currentWave->Calculate(voice.phase) * MASTER_VOLUME;
                     voice.phase += 2.0f * 3.14159f * freq / 48000.0f;
                     if (voice.phase > 2.0f * 3.14159f)
                         voice.phase -= 2.0f * 3.14159f;

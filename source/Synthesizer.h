@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
-#include <cmath>
 #include <mutex>
 #include <SDL3/SDL.h>
+#include "Wave.h"
 
 namespace Synthesizer
 {
@@ -11,6 +11,8 @@ namespace Synthesizer
     void NoteOn(int note, int velocity);
 
     void NoteOff(int note);
+    
+
 
     // Helper for visualization
     struct VoiceState
