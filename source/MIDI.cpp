@@ -12,12 +12,12 @@ void MIDI::midiCallback(double deltatime, std::vector<unsigned char>* message, v
         // Note On (0x90)
         if ((status & 0xF0) == 0x90 && velocity > 0)
         {
-            Oscilator::NoteOn(note, velocity);
+            Synthesizer::ProcessNoteOn(note, velocity);
         }
         // Note Off (0x80)
         else if ((status & 0xF0) == 0x80 || ((status & 0xF0) == 0x90 && velocity == 0))
         {
-            Oscilator::NoteOff(note);
+            Synthesizer::ProcessNoteOff(note);
         }
     }
 }
