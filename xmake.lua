@@ -71,7 +71,7 @@ target("USB_Base")
     add_includedirs("external/lvgl")
     add_defines("LV_CONF_INCLUDE_SIMPLE")
 
-
+	add_defines("LV_COLOR_DEPTH=32")
 	
 	add_packages("libsdl3")
     add_packages("rtmidi")
