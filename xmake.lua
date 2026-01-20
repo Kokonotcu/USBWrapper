@@ -26,6 +26,7 @@ set_targetdir("bin/$(plat)/$(mode)")
 ---- Linux uses system packages via pkg-config;
 add_requires("libsdl3")
 add_requires("rtmidi")
+add_requires("lvgl v8.3.11")
 
 if is_plat("android") then
     add_requires("libsdl3", {configs = {shared = false}})
@@ -40,9 +41,13 @@ target("USB_Base")
 --
 	add_packages("libsdl3")
     add_packages("rtmidi")
+	add_packages("lvgl")
 
     -- Your sources
     add_includedirs("source", {public = true})
+	
+	add_includedirs(".")
+    add_defines("LV_CONF_INCLUDE_SIMPLE")
 --	
 --	-- Define groups (patterns are relative to rootdir)
 	add_filegroups("Source Files", { rootdir = "source", files = {"**.cpp"},           group = "Source Files" })

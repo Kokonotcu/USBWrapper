@@ -1,4 +1,5 @@
 #include <SDL3/SDL.h>
+#include "lvgl/lvgl.h"
 #include <iostream>
 #include <vector>
 #include "Application.h"
