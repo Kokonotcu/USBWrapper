@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "Application.h"
+#include "lvgl.h"
 
 int main(int argc, char* argv[])
 {

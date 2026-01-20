@@ -2,7 +2,7 @@
 
 bool Audio::Init()
 {
-    spec = { SDL_AUDIO_F32, 2, 48000 };
+    spec = { SDL_AUDIO_F32, 2, Oscillator::sampleRate };
     stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, Synthesizer::AudioCallback, nullptr);
     SDL_ResumeAudioDevice(SDL_GetAudioStreamDevice(stream));
 

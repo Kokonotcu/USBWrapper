@@ -1,75 +1,59 @@
 #include "Synthesizer.h"
 
-#define MASTER_VOLUME 0.2f
-
 namespace Synthesizer
 {
-    namespace
-    {
-        struct Voice
-        {
-            bool active;
-            int note;
-            float phase;
-            float amplitude;
-        };
+	namespace 
+	{
+		std::vector<std::unique_ptr<Oscillator>> oscilators;
+	}
 
-        Voice voices[128] = { 0 }; // Polyphony for all 128 MIDI notes
-        std::mutex mut;
-    }
+	void Init()
+	{
+		oscilators.push_back(std::make_unique<Oscillator>());
+		oscilators[0]->Init();
+		oscilators[0]->SetWaveform(std::make_unique<SineWave>());
 
-    void Init()
-    {
-        for (auto& v : voices)
-            v.active = false;
-    }
-    void NoteOn(int note, int velocity)
-    {
-        std::lock_guard<std::mutex> lock(mut);
-        voices[note].active = true;
-        voices[note].note = note;
-        voices[note].phase = 0.0f;
+		oscilators.push_back(std::make_unique<Oscillator>());
+		oscilators[1]->Init();
+		oscilators[1]->SetWaveform(std::make_unique<NoiseWave>());
+	}
 
-        // We divide by 127.0f to normalize it.
-        voices[note].amplitude = (float)velocity / 127.0f;
-    }
-    void NoteOff(int note)
-    {
-        std::lock_guard<std::mutex> lock(mut);
-        voices[note].active = false;
-    }
-    std::vector<Synthesizer::VoiceState> GetActiveVoices()
-    {
-        std::lock_guard<std::mutex> lock(mut);
-        std::vector<VoiceState> states;
-        for (const auto& v : voices)
-            states.push_back({ v.active, v.note });
-        return states;
-    }
-    void AudioCallback(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount)
-    {
-        int sampleCount = additional_amount / sizeof(float);
-        std::vector<float> buffer(sampleCount);
+	void ProcessNoteOn(int note, int velocity)
+	{
+		for (auto& osc : oscilators)
+		{
+			osc->NoteOn(note, velocity);
+		}
+	}
 
-        std::lock_guard<std::mutex> lock(mut);
-        for (int i = 0; i < sampleCount; ++i)
-        {
-            float sample = 0.0f;
-            for (auto& voice : voices)
-            {
-                if (voice.active)
-                {
-                    // Standard Sine Wave Formula
-                    float freq = 440.0f * std::pow(2.0f, (voice.note - 69) / 12.0f);
-                    sample += voice.amplitude * std::sin(voice.phase) * MASTER_VOLUME;
-                    voice.phase += 2.0f * 3.14159f * freq / 48000.0f;
-                    if (voice.phase > 2.0f * 3.14159f)
-                        voice.phase -= 2.0f * 3.14159f;
-                }
-            }
-            buffer[i] = sample;
-        }
-        
-        SDL_PutAudioStreamData(stream, buffer.data(), buffer.size() * sizeof(float));
-    }
+	void ProcessNoteOff(int note)
+	{
+		for (auto& osc : oscilators)
+		{
+			osc->NoteOff(note);
+		}
+	}
+
+	std::vector<Oscillator::VoiceState> GetActiveVoices()
+	{
+		// For simplicity, we return the voices from the first oscilator
+		if (!oscilators.empty())
+		{
+			return oscilators[0]->GetActiveVoices();
+		}
+		return {};
+	}
+
+	void AudioCallback(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount)
+	{
+		int sampleCount = additional_amount / sizeof(float);
+		std::vector<float> buffer(sampleCount);
+
+		for(auto& osc : oscilators)
+		{
+			osc->Oscilate(buffer);
+		}
+
+		SDL_PutAudioStreamData(stream, buffer.data(), buffer.size() * sizeof(float));
+	}
 }

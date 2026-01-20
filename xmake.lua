@@ -1,6 +1,15 @@
 set_project("USB_Base")
-set_languages("c++20")
 add_rules("mode.release", "mode.debug")
+
+add_requireconfs("lvgl", {
+    configs = {
+        cmake_args = {
+            "-DLV_USE_DRAW_SW_ASM=OFF", -- Fixes the "lv_blend_helium" error
+            "-DLV_USE_DRAW_VG_LITE=OFF",
+            "-DLV_USE_DRAW_PXP=OFF"
+        }
+    }
+})
 
 if is_mode("debug") then
     add_defines("DEBUG", "_DEBUG")
@@ -21,26 +30,52 @@ end
 
 -- Put outputs in a predictable place
 set_targetdir("bin/$(plat)/$(mode)")
---
----- ---- Root-scope requirements (OK here; NOT inside target) ----
----- Linux uses system packages via pkg-config;
 add_requires("libsdl3")
 add_requires("rtmidi")
+---- ---- Root-scope requirements (OK here; NOT inside target) ----
+---- Linux uses system packages via pkg-config;
+
 
 if is_plat("android") then
     add_requires("libsdl3", {configs = {shared = false}})
 end
 --
+
+target("lvgl_lib")
+    set_kind("static")
+    set_languages("c99") -- FORCE C language for these files
+    
+    -- Adjust path to match your folder structure: 'external/lvgl'
+    add_files("external/lvgl/src/**.c") 
+    
+    -- Exclude ASM files to fix the previous "helium" crash
+    remove_files("external/lvgl/src/**.S") 
+    
+    add_includedirs("external/lvgl")
+    add_includedirs(".") -- To find lv_conf.h
+    add_defines("LV_CONF_INCLUDE_SIMPLE")
+
+
+set_languages("c++20")
+
 target("USB_Base")
     if is_plat("android") then
         set_kind("shared")
     else
         set_kind("binary")
     end
+	
+	add_deps("lvgl_lib")
 --
+	add_includedirs(".")
+    add_includedirs("external/lvgl")
+    add_defines("LV_CONF_INCLUDE_SIMPLE")
+
+
+	
 	add_packages("libsdl3")
     add_packages("rtmidi")
-
+	
     -- Your sources
     add_includedirs("source", {public = true})
 --	
@@ -51,6 +86,10 @@ target("USB_Base")
 --	-- Add those groups to the target
 	add_files("source/**.cpp",    { group = "Source Files" })
 	add_headerfiles("source/**.h", "source/**.hpp",    { group = "Header Files" })
+	
+	
+	
+	
 	
 	
 --    -- -------------------- Linux --------------------
