@@ -5,14 +5,14 @@
 #include <memory>
 #include <mutex>
 
-class Oscilator
+class Oscillator
 {
 public:
-	Oscilator() = default;
+	Oscillator() = default;
 
     void Init();
 
-    void Oscilate(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount);
+    void Oscilate(std::vector<float>& buffer);
 
     void NoteOn(int note, int velocity);
 
@@ -20,6 +20,7 @@ public:
 
 	void SetWaveform(std::unique_ptr<Wave> wave);
 
+public:
     // Helper for visualization
     struct VoiceState
     {
@@ -28,6 +29,9 @@ public:
     };
 
     std::vector<VoiceState> GetActiveVoices();
+
+public:
+    static constexpr int sampleRate = 44100;
 
 private:
     struct Voice
