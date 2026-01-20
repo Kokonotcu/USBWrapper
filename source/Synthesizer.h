@@ -1,5 +1,5 @@
 #pragma once
-#include "Oscilator.h"
+#include "Oscillator.h"
 
 namespace Synthesizer
 {
@@ -7,7 +7,7 @@ namespace Synthesizer
 
 	void ProcessNoteOn(int note, int velocity);
 	void ProcessNoteOff(int note);
-	std::vector<Oscilator::VoiceState> GetActiveVoices();
+	std::vector<Oscillator::VoiceState> GetActiveVoices();
 
 	// SDL Audio Callback (The Sound Engine)
 	void AudioCallback(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount);

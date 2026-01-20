@@ -4,13 +4,18 @@ namespace Synthesizer
 {
 	namespace 
 	{
-		std::vector<std::unique_ptr<Oscilator>> oscilators;
+		std::vector<std::unique_ptr<Oscillator>> oscilators;
 	}
 
 	void Init()
 	{
-		oscilators.push_back(std::make_unique<Oscilator>());
+		oscilators.push_back(std::make_unique<Oscillator>());
 		oscilators[0]->Init();
+		oscilators[0]->SetWaveform(std::make_unique<SineWave>());
+
+		oscilators.push_back(std::make_unique<Oscillator>());
+		oscilators[1]->Init();
+		oscilators[1]->SetWaveform(std::make_unique<NoiseWave>());
 	}
 
 	void ProcessNoteOn(int note, int velocity)
@@ -29,7 +34,7 @@ namespace Synthesizer
 		}
 	}
 
-	std::vector<Oscilator::VoiceState> GetActiveVoices()
+	std::vector<Oscillator::VoiceState> GetActiveVoices()
 	{
 		// For simplicity, we return the voices from the first oscilator
 		if (!oscilators.empty())
@@ -41,9 +46,14 @@ namespace Synthesizer
 
 	void AudioCallback(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount)
 	{
+		int sampleCount = additional_amount / sizeof(float);
+		std::vector<float> buffer(sampleCount);
+
 		for(auto& osc : oscilators)
 		{
-			osc->Oscilate(userdata, stream, additional_amount, total_amount);
+			osc->Oscilate(buffer);
 		}
+
+		SDL_PutAudioStreamData(stream, buffer.data(), buffer.size() * sizeof(float));
 	}
 }

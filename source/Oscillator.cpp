@@ -1,8 +1,8 @@
-#include "Oscilator.h"
+#include "Oscillator.h"
 
-#define MASTER_VOLUME 0.2f
+#define MASTER_VOLUME 0.12f
 
-void Oscilator::Init()
+void Oscillator::Init()
 {
 
     currentWave = std::make_unique<SineWave>();
@@ -11,14 +11,11 @@ void Oscilator::Init()
     
 }
 
-void Oscilator::Oscilate(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount)
+void Oscillator::Oscilate(std::vector<float>& buffer)
 {
-    int sampleCount = additional_amount / sizeof(float);
-    std::vector<float> buffer(sampleCount);
-
     std::lock_guard<std::mutex> lock(mut);
 
-    for (int i = 0; i < sampleCount; ++i)
+    for (int i = 0; i < buffer.size(); ++i)
     {
         float sample = 0.0f;
         for (auto& voice : voices)
@@ -27,18 +24,16 @@ void Oscilator::Oscilate(void* userdata, SDL_AudioStream* stream, int additional
             {
                 float freq = CalculateFrequency(voice.note);
                 sample += voice.amplitude * currentWave->Calculate(voice.phase) * MASTER_VOLUME;
-                voice.phase += 2.0f * 3.14159f * freq / 48000.0f;
+                voice.phase += 2.0f * 3.14159f * freq / sampleRate;
                 if (voice.phase > 2.0f * 3.14159f)
                     voice.phase -= 2.0f * 3.14159f;
             }
         }
-        buffer[i] = sample;
-    }
-
-    SDL_PutAudioStreamData(stream, buffer.data(), buffer.size() * sizeof(float));
+        buffer[i] += sample;
+    }   
 }
 
-void Oscilator::NoteOn(int note, int velocity)
+void Oscillator::NoteOn(int note, int velocity)
 {
     std::lock_guard<std::mutex> lock(mut);
     voices[note].active = true;
@@ -49,19 +44,19 @@ void Oscilator::NoteOn(int note, int velocity)
     voices[note].amplitude = (float)velocity / 127.0f;
 }
 
-void Oscilator::NoteOff(int note)
+void Oscillator::NoteOff(int note)
 {
     std::lock_guard<std::mutex> lock(mut);
     voices[note].active = false;
 }
 
-void Oscilator::SetWaveform(std::unique_ptr<Wave> wave)
+void Oscillator::SetWaveform(std::unique_ptr<Wave> wave)
 {
     currentWave.reset();
 	currentWave = std::move(wave);
 }
 
-std::vector<Oscilator::VoiceState> Oscilator::GetActiveVoices()
+std::vector<Oscillator::VoiceState> Oscillator::GetActiveVoices()
 {
     std::lock_guard<std::mutex> lock(mut);
     std::vector<VoiceState> states;
@@ -70,7 +65,7 @@ std::vector<Oscilator::VoiceState> Oscilator::GetActiveVoices()
     return states;
 }
 
-float Oscilator::CalculateFrequency(int note)
+float Oscillator::CalculateFrequency(int note)
 {
     return 440.0f * std::pow(2.0f, (note - 69) / 12.0f);
 }

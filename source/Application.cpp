@@ -9,6 +9,7 @@ Application::Application()
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 	window =  SDL_CreateWindow("Cross-Platform Synth", SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
 	renderer.Init(window);
+    SDL_SetRenderVSync(renderer.GetSDLRenderer(), 1);
     audio.Init();
 }
 
@@ -30,6 +31,8 @@ void Application::Run()
 
         auto voices = Synthesizer::GetActiveVoices();
         float keyWidth = (float)SCREEN_WIDTH / 128.0f;
+
+        
 
         for (int i = 0; i < 128; i++)
         {
