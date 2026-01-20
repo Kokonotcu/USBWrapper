@@ -1,6 +1,9 @@
 #pragma once
+#include <math.h>
 #include <cmath>
 #include <numbers>
+
+# define M_PI           3.14159265358979323846
 
 class Wave 
 {
@@ -27,7 +30,7 @@ class TriangleWave : public Wave
 {
 	double Calculate(float x) override 
 	{
-		return (2.0 / std::numbers::pi) * std::asin(std::sin(x));
+		return (2.0 / M_PI) * std::asin(std::sin(x));
 	}
 };
 
@@ -35,7 +38,7 @@ class SawtoothWave : public Wave
 {
 	double Calculate(float x) override 
 	{
-		return (2.0 / std::numbers::pi) * (x - std::numbers::pi * std::floor(x / std::numbers::pi + 0.5));
+		return (2.0 / M_PI) * (x - M_PI * std::floor(x / M_PI + 0.5));
 	}
 };
 
