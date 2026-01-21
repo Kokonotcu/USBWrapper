@@ -1,5 +1,5 @@
 #include "MIDI.h"
-#include "UI.h"
+#include "Graphics.h"
 
 void MIDI::midiCallback(double deltatime, std::vector<unsigned char>* message, void* userData)
 {

@@ -3,12 +3,12 @@
 bool Renderer::Init(SDL_Window* window)
 {
 	renderer = SDL_CreateRenderer(window, NULL);
-	return true;
-}
+	Graphics::Init(renderer);
 
-void Renderer::Clear()
-{
-	SDL_RenderClear(renderer);
+	drawables.push_back(std::make_unique<Piano>());
+	drawables[0]->SetPosition(0, 200);
+	
+	return true;
 }
 
 void Renderer::Present()
@@ -16,14 +16,16 @@ void Renderer::Present()
 	SDL_RenderPresent(renderer);
 }
 
-void Renderer::SetDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+void Renderer::DrawSDL()
 {
-	SDL_SetRenderDrawColor(renderer, r, g, b, a);
-}
+    // --- Visualizer ---
+    SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
+    SDL_RenderClear(renderer);
 
-void Renderer::FillRectangle(const SDL_FRect* rect)
-{
-	SDL_RenderFillRect(renderer, rect); 
+	for (const auto& drawable : drawables)
+	{
+		drawable->Draw(renderer);
+	}
 }
 
 SDL_Renderer* Renderer::GetSDLRenderer()

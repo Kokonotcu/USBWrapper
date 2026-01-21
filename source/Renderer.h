@@ -1,18 +1,21 @@
 #pragma once
-#include "UI.h"
+#include "Graphics.h"
+#include "visual/Piano.h"
+#include <SDL3/SDL.h>
 
 class Renderer
 {
 public:
 	bool Init(SDL_Window* window);
-	void Clear();
 	void Present();
 
-	void SetDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-	void FillRectangle(const SDL_FRect* rect);
+	void DrawSDL();
 
 	SDL_Renderer* GetSDLRenderer();
 	void ShutDown();
 private:
 	SDL_Renderer* renderer;
+
+private:
+	std::vector<std::unique_ptr<Drawable>> drawables;
 };
