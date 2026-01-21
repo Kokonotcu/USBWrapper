@@ -9,7 +9,7 @@ public:
 	bool Init(SDL_Window* window);
 	void Present();
 
-	void DrawSDL();
+	void Draw();
 
 	SDL_Renderer* GetSDLRenderer();
 	void ShutDown();
