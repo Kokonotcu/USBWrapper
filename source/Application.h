@@ -1,6 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "Audio.h"
+#include "Input.h"
 
 class Application 
 {

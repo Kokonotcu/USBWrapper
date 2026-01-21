@@ -35,16 +35,16 @@ namespace Graphics
 
         lv_obj_set_style_bg_opa(screen, LV_OPA_TRANSP, 0);
 
-        lv_obj_t* drp = lv_dropdown_create(screen);
-		lv_obj_set_size(drp, 150, 30);
-		lv_obj_align(drp, LV_ALIGN_TOP_RIGHT, -15, 20);
-		lv_obj_set_style_bg_color(drp, lv_color_make(50,120,15), 0);
-        lv_obj_set_style_border_color(drp,lv_color_white(),0);
+        //lv_obj_t* drp = lv_dropdown_create(screen);
+		//lv_obj_set_size(drp, 150, 30);
+		//lv_obj_align(drp, LV_ALIGN_TOP_RIGHT, -15, 20);
+		//lv_obj_set_style_bg_color(drp, lv_color_make(50,120,15), 0);
+        //lv_obj_set_style_border_color(drp,lv_color_white(),0);
 
         // 2. Create a Button
         lv_obj_t* btn = lv_button_create(screen);
         lv_obj_set_size(btn, 150, 30);
-        lv_obj_align(btn, LV_ALIGN_CENTER, 0, 0); // Center it
+        lv_obj_align(btn, LV_ALIGN_TOP_MID, 0, 50); // Center it
         
         // 3. Add a Label
         lv_obj_t* label = lv_label_create(btn);

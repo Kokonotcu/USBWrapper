@@ -6,6 +6,7 @@ Application::Application()
 	window =  SDL_CreateWindow("Cross-Platform Synth", SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
 
 	renderer.Init(window);
+	Input::InitLVGLInput();
     SDL_SetRenderVSync(renderer.GetSDLRenderer(), 1);
 
     audio.Init();
@@ -21,6 +22,8 @@ void Application::Run()
         {
             if (e.type == SDL_EVENT_QUIT)
                 running = false;
+
+			Input::ProcessMouseInput(&e);
         }
 
 		renderer.Draw();
