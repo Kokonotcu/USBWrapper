@@ -23,10 +23,7 @@ void Application::Run()
                 running = false;
         }
 
-		renderer.DrawSDL();
-
-		Graphics::DrawUI();
-
+		renderer.Draw();
 		renderer.Present();
     }
 }

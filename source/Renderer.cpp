@@ -16,7 +16,7 @@ void Renderer::Present()
 	SDL_RenderPresent(renderer);
 }
 
-void Renderer::DrawSDL()
+void Renderer::Draw()
 {
     // --- Visualizer ---
     SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
@@ -26,6 +26,8 @@ void Renderer::DrawSDL()
 	{
 		drawable->Draw(renderer);
 	}
+
+	Graphics::DrawUI();
 }
 
 SDL_Renderer* Renderer::GetSDLRenderer()
