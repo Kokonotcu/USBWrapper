@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#define LV_FONT_MONTSERRAT_12  1  // Small (Tooltips)
+#define LV_FONT_MONTSERRAT_14  1  // Standard (UI)
+#define LV_FONT_MONTSERRAT_20  1  // Large (Headers/Knobs)
+
 #define LV_CONF_SKIP 0
 
 /* v9 COLOR SETTINGS - Now runtime configurable, but defaults help */

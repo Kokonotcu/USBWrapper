@@ -1,5 +1,5 @@
 #pragma once
-#include "lvgl.h"
+#include "visual/ThemeManager.h"
 #include <memory>
 #include <SDL3/SDL.h>
 

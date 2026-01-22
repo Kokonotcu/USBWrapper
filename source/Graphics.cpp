@@ -35,11 +35,25 @@ namespace Graphics
 
         lv_obj_set_style_bg_opa(screen, LV_OPA_TRANSP, 0);
 
-        //lv_obj_t* drp = lv_dropdown_create(screen);
-		//lv_obj_set_size(drp, 150, 30);
-		//lv_obj_align(drp, LV_ALIGN_TOP_RIGHT, -15, 20);
-		//lv_obj_set_style_bg_color(drp, lv_color_make(50,120,15), 0);
-        //lv_obj_set_style_border_color(drp,lv_color_white(),0);
+		ThemeManager::Init();
+
+        lv_obj_t* drp = lv_dropdown_create(screen);
+		lv_obj_set_size(drp, 150, 20);
+		lv_obj_align(drp, LV_ALIGN_TOP_RIGHT, -15, 20);
+		//lv_dropdown_set_options(drp, "Option 1\nOption 2\nOption 3\nOption 4\nOption 5");
+
+        //create a slider
+		lv_obj_t* slider = lv_slider_create(screen);
+		lv_obj_set_size(slider, 200, 8);
+        lv_obj_set_style_transform_rotation(slider,-900, 0);
+		lv_obj_align(slider, LV_ALIGN_TOP_LEFT, 40,200);
+
+        //create a slider
+        lv_obj_t* slidert = lv_slider_create(screen);
+        lv_obj_set_size(slidert, 200, 8);
+        lv_obj_set_style_transform_rotation(slidert, -900, 0);
+        lv_obj_align(slidert, LV_ALIGN_TOP_LEFT, 80, 200);
+
 
         // 2. Create a Button
         lv_obj_t* btn = lv_button_create(screen);

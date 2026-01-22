@@ -24,9 +24,9 @@ void Oscillator::Oscilate(std::vector<float>& buffer)
             {
                 float freq = CalculateFrequency(voice.note);
                 sample += voice.amplitude * currentWave->Calculate(voice.phase) * MASTER_VOLUME;
-                voice.phase += 2.0f * 3.14159f * freq / sampleRate;
-                if (voice.phase > 2.0f * 3.14159f)
-                    voice.phase -= 2.0f * 3.14159f;
+                voice.phase += 2.0f * M_PI * freq / sampleRate;
+                if (voice.phase > 2.0f * M_PI)
+                    voice.phase -= 2.0f * M_PI;
             }
         }
         buffer[i] += sample;
