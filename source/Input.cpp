@@ -82,9 +82,9 @@ namespace Input
 		lv_indev_set_read_cb(mouseMainIndev, Input::ReadCallbackMain);
 		lv_indev_set_type(mouseMainIndev, LV_INDEV_TYPE_POINTER);
 
-		lv_indev_t* mouseSecondaryIndev = lv_indev_create();
-		lv_indev_set_read_cb(mouseSecondaryIndev, Input::ReadCallbackMain);
-		lv_indev_set_type(mouseSecondaryIndev, LV_INDEV_TYPE_POINTER);
+		//lv_indev_t* mouseSecondaryIndev = lv_indev_create();
+		//lv_indev_set_read_cb(mouseSecondaryIndev, Input::ReadCallbackMain);
+		//lv_indev_set_type(mouseSecondaryIndev, LV_INDEV_TYPE_POINTER);
 	}
 	int GetX() { return mouseX; }
 	int GetY() { return mouseY; }

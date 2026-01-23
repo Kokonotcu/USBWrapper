@@ -15,8 +15,13 @@ Application::Application()
 void Application::Run()
 {
     bool running = true;
+	
     while (running)
     {
+		Time::CalculateDeltaTime();
+
+		tester.RunTests();
+
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
@@ -24,6 +29,7 @@ void Application::Run()
                 running = false;
 
 			Input::ProcessMouseInput(&e);
+
         }
 
 		renderer.Draw();

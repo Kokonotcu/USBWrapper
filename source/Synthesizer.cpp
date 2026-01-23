@@ -5,6 +5,7 @@ namespace Synthesizer
 	namespace 
 	{
 		std::vector<std::unique_ptr<Oscillator>> oscilators;
+		bool activeNotes[127] = {false};
 	}
 
 	void Init()
@@ -12,25 +13,27 @@ namespace Synthesizer
 		oscilators.push_back(std::make_unique<Oscillator>());
 		oscilators[0]->Init();
 		oscilators[0]->SetWaveform(std::make_unique<SineWave>());
-
-		oscilators.push_back(std::make_unique<Oscillator>());
-		oscilators[1]->Init();
-		oscilators[1]->SetWaveform(std::make_unique<NoiseWave>());
 	}
 
 	void ProcessNoteOn(int note, int velocity)
 	{
+		if (activeNotes[note])
+			return;
 		for (auto& osc : oscilators)
 		{
 			osc->NoteOn(note, velocity);
+			activeNotes[note] = true;
 		}
 	}
 
 	void ProcessNoteOff(int note)
 	{
+		if (!activeNotes[note])
+			return;
 		for (auto& osc : oscilators)
 		{
 			osc->NoteOff(note);
+			activeNotes[note] = false;
 		}
 	}
 
@@ -42,6 +45,15 @@ namespace Synthesizer
 			return oscilators[0]->GetActiveVoices();
 		}
 		return {};
+	}
+
+	Oscillator* GetOscillator(int index)
+	{
+		if (index >= 0 && index < oscilators.size())
+		{
+			return oscilators[index].get();
+		}
+		return nullptr;
 	}
 
 	void AudioCallback(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount)

@@ -1,5 +1,6 @@
 set_project("USB_Base")
 add_rules("mode.release", "mode.debug")
+set_languages("c++20")
 
 add_requireconfs("lvgl", {
     configs = {
@@ -40,6 +41,7 @@ if is_plat("android") then
     add_requires("libsdl3", {configs = {shared = false}})
 end
 --
+set_languages("c++20")
 
 target("lvgl_lib")
     set_kind("static")

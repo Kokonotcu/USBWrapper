@@ -147,7 +147,7 @@ namespace ThemeManager
             lv_style_set_border_width(&style_dd_list, 1);
             lv_style_set_border_color(&style_dd_list, c_border);
             lv_style_set_border_post(&style_dd_list, true);
-            lv_style_set_radius(&style_dd_list, 0);
+            lv_style_set_radius(&style_dd_list, 8);
             lv_style_set_text_color(&style_dd_list, c_text);
             lv_style_set_pad_all(&style_dd_list, 4);
             lv_style_set_text_line_space(&style_dd_list, 8);
@@ -155,7 +155,7 @@ namespace ThemeManager
             // The Highlighted Item in the list
             lv_style_init(&style_dd_selected);
             lv_style_set_bg_color(&style_dd_selected, c_accent);
-            lv_style_set_text_color(&style_dd_selected, c_bg); // Black text on Purple
+            lv_style_set_text_color(&style_dd_selected, c_accent); // Black text on Purple
         }
 
         // =====================================================
@@ -206,7 +206,7 @@ namespace ThemeManager
                 lv_obj_add_style(obj, &style_dd_list, 0);
                 // Apply the selection style
                 lv_obj_add_style(obj, &style_dd_selected, LV_PART_SELECTED);
-
+            
                 // Hide scrollbar
                 lv_obj_set_style_bg_opa(obj, LV_OPA_TRANSP, LV_PART_SCROLLBAR);
             }

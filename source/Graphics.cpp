@@ -1,4 +1,6 @@
 #include "Graphics.h"
+#include "Controls.h"
+#include "Synthesizer.h"
 
 namespace Graphics 
 {
@@ -30,40 +32,62 @@ namespace Graphics
         lv_display_set_user_data(disp, renderer);
         // ------------------------
 
-        // NOW this will work:
         lv_obj_t* screen = lv_screen_active();
 
         lv_obj_set_style_bg_opa(screen, LV_OPA_TRANSP, 0);
 
 		ThemeManager::Init();
 
-        lv_obj_t* drp = lv_dropdown_create(screen);
-		lv_obj_set_size(drp, 150, 20);
-		lv_obj_align(drp, LV_ALIGN_TOP_RIGHT, -15, 20);
-		//lv_dropdown_set_options(drp, "Option 1\nOption 2\nOption 3\nOption 4\nOption 5");
+        // Create a horizontal panel to hold our controls
+        lv_obj_t* mainPanel = lv_obj_create(lv_screen_active());
+        lv_obj_set_size(mainPanel, 1000, 200);
+        lv_obj_set_flex_flow(mainPanel, LV_FLEX_FLOW_ROW); // Items arrange left-to-right
+		lv_obj_align(mainPanel, LV_ALIGN_TOP_MID, 0, 15);
+        //lv_obj_center(mainPanel);
 
-        //create a slider
-		lv_obj_t* slider = lv_slider_create(screen);
-		lv_obj_set_size(slider, 200, 8);
-        lv_obj_set_style_transform_rotation(slider,-900, 0);
-		lv_obj_align(slider, LV_ALIGN_TOP_LEFT, 40,200);
+        // ---------------------------------------------------------
+        // 1. OSCILLATOR WAVEFORM
+        // ---------------------------------------------------------
+        new DropdownList(mainPanel, "Oscillator 1", "Sine\nTriangle\nSquare\nSawtooth\nNoise", 0, LV_ALIGN_TOP_MID, 0, 150,
+            [](int selectedIndex) {
+                switch (selectedIndex)
+                {
+                        case 0:
+                            Synthesizer::GetOscillator(0)->SetWaveform(std::make_unique<SineWave>());
+					        break;
+                        case 1:
+                            Synthesizer::GetOscillator(0)->SetWaveform(std::make_unique<TriangleWave>());
+						    break;
+                        case 2:
+							Synthesizer::GetOscillator(0)->SetWaveform(std::make_unique<SquareWave>());
+							break;
+						case 3:
+							Synthesizer::GetOscillator(0)->SetWaveform(std::make_unique<SawtoothWave>());
+							break;
+						case 4:
+							Synthesizer::GetOscillator(0)->SetWaveform(std::make_unique<NoiseWave>());
+							break;
 
-        //create a slider
-        lv_obj_t* slidert = lv_slider_create(screen);
-        lv_obj_set_size(slidert, 200, 8);
-        lv_obj_set_style_transform_rotation(slidert, -900, 0);
-        lv_obj_align(slidert, LV_ALIGN_TOP_LEFT, 80, 200);
+                        default:
+                            break;
+                }
+            });
 
-
-        // 2. Create a Button
-        lv_obj_t* btn = lv_button_create(screen);
-        lv_obj_set_size(btn, 150, 30);
-        lv_obj_align(btn, LV_ALIGN_TOP_MID, 0, 50); // Center it
-        
-        // 3. Add a Label
-        lv_obj_t* label = lv_label_create(btn);
-        lv_label_set_text(label, "IT WORKS!");
-        lv_obj_center(label);
+        // ---------------------------------------------------------
+        // 2. FILTER TYPE
+        // ---------------------------------------------------------
+        //DropdownList(mainPanel, "FILTER", "Lowpass\nHighpass\nBandpass\nNotch", 0,
+        //    [](int selectedIndex) {
+        //        synth->SetFilterType(selectedIndex);
+        //    });
+        //
+        //// ---------------------------------------------------------
+        //// 3. LFO TARGET
+        //// ---------------------------------------------------------
+        //DropdownList(mainPanel, "LFO TARGET", "None\nPitch\nCutoff\nVolume", 2,
+        //    [](int selectedIndex) {
+        //        synth->SetLfoTarget(selectedIndex);
+        //    });
 	}
 
 	void UIFlush(lv_display_t* disp, const lv_area_t* area, uint8_t* px_map)
@@ -98,6 +122,8 @@ namespace Graphics
 
         // 3. Tell LVGL we are ready
         lv_display_flush_ready(disp);
+
+        
 	}
 
     void DrawUI()
